@@ -3,7 +3,7 @@ var prospect = angular.module('prospect', []);
 prospect.provider('prospectViews', [function () {
 		var views = [];
 
-		/**
+		/*
 		 * Add a view configuration.
 		 */
 		this.view = function (name, configuration) {
@@ -36,14 +36,14 @@ prospect.provider('prospectViews', [function () {
 prospect.service('$$prospectEvents', [function () {
 		var urlListeners = [];
 
-		/**
+		/*
 		 * Add listener to be notified when the URL change has occurred.
 		 */
 		this.addUrlListener = function (listener) {
 			urlListeners.push(listener);
 		};
 
-		/**
+		/*
 		 * Notify every listener that a URL change has occurred.
 		 */
 		this.notifyUrlListeners = function (path, params) {
@@ -56,7 +56,7 @@ prospect.service('$$prospectEvents', [function () {
 
 prospect.run(['$location', '$rootScope', '$$prospectEvents',
 	function ($location, $rootScope, $$prospectEvents) {
-		/**
+		/*
 		 * Listen for URL changes and notify all listeners.
 		 */
 		$rootScope.$on('$locationChangeSuccess', function (event, newUrl, oldUrl, newState, oldState) {
@@ -66,7 +66,7 @@ prospect.run(['$location', '$rootScope', '$$prospectEvents',
 
 prospect.directive('prospectView', ['$compile', '$rootScope', '$controller', '$sce', '$templateRequest', '$$prospectEvents', 'prospectViews',
 	function ($compile, $rootScope, $controller, $sce, $templateRequest, $$prospectEvents, prospectViews) {
-		/**
+		/*
 		 * Render a new template and controller on the specified element.
 		 */
 		function renderView(element, templateUrl, controller) {
@@ -74,14 +74,14 @@ prospect.directive('prospectView', ['$compile', '$rootScope', '$controller', '$s
 
 			return $templateRequest(templateUrl).then(function (template) {
 				var viewScope = $rootScope.$new();
-				
+
 				$controller(controller, {
 					$scope: viewScope
 				});
-				
+
 				element.html(template);
 				$compile(element.contents())(viewScope);
-				
+
 				return viewScope;
 			}, function (err) {
 				throw new Error("Error loading prospect template: " + templateUrl);
@@ -104,12 +104,12 @@ prospect.directive('prospectView', ['$compile', '$rootScope', '$controller', '$s
 
 					if (renderResult.templateUrl === scope.currentTemplateUrl &&
 							renderResult.controller === scope.currentController) {
-						// just update the current one
+						// notify the current controller that there was a change
 						if (scope.currentViewScope.handleStateChange) {
 							scope.currentViewScope.handleStateChange();
 						}
 					} else {
-						// re render everything
+						// re-render everything
 						renderView(element, renderResult.templateUrl, renderResult.controller).then(function (newScope) {
 							scope.currentTemplateUrl = renderResult.templateUrl;
 							scope.currentController = renderResult.controller;
