@@ -3,7 +3,7 @@
 prospect makes it easy to define views on your page that will listen for changes to the URL fragment and update the view accordingly.
 
 Here is how to declare the configuration for a view:
-~~~~
+```javascript
 // add a dependency on prospect
 var myApp = angular.module('myApp', ['prospect']);
 
@@ -22,22 +22,22 @@ myApp.config(['prospectViewsProvider', function (prospectViewsProvider) {
 			}
 		});
 	}]);
-~~~~
+```
 
 To use the view in your HTML files, use the 'prospect-view' directive and supply the name parameter to indicate which configured view to use:
-~~~~
+```html
 <div prospect-view name="myView" />
-~~~~
+```
 
 In your controller, you can change the URL however you want, and the view will update automatically. One way would be to use $location:
-~~~~
+```javascript
 $location.path('/subview');
 $location.search('param', 12345);
-~~~~
+```
 
 The controller will be instantiated whenever the 'render' function has changed either controller or templateUrl. 
 To receive notifications in your view controller when the URL changes, add a function named 'handleProspectStateChange' to your controllers scope:
-~~~~
+```javascript
 myapp.controller('exampleCtrl', function($scope) {
 	// code that will be executed when the view is newly rendered
 
@@ -47,7 +47,7 @@ myapp.controller('exampleCtrl', function($scope) {
 		// e.g. reload data, show something different, or do nothing
 	};
 });
-~~~~
+```
 
 ## TODO
 - controllerAs support
