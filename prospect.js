@@ -105,8 +105,8 @@ prospect.directive('prospectView', ['$compile', '$rootScope', '$controller', '$s
 					if (renderResult.templateUrl === scope.currentTemplateUrl &&
 							renderResult.controller === scope.currentController) {
 						// notify the current controller that there was a change
-						if (scope.currentViewScope.handleStateChange) {
-							scope.currentViewScope.handleStateChange();
+						if (scope.currentViewScope.handleProspectStateChange) {
+							scope.currentViewScope.handleProspectStateChange();
 						}
 					} else {
 						// re-render everything
