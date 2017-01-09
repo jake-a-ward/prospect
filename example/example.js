@@ -35,7 +35,7 @@ myApp.controller('exampleCtrl', ['$scope', '$location',
 			$location.path('/example');
 		};
 
-		$scope.handleStateChange = function () {
+		$scope.handleProspectStateChange = function () {
 			// instead of reloading the entire controller
 			// this function is called instead
 		};
