@@ -15,13 +15,13 @@
 		<div prospect-view name="view2"></div>
 
 		<script type="text/ng-template" id="example1.tmpl.html">
-			<h1>Example 1 View: {{x}}</h1>
-			<input type="button" value="Click me!" ng-click="foobar()"/>
+			<h1>Example 1 View: {{exampleCtrl.x}}</h1>
+			<input type="button" value="Click me!" ng-click="exampleCtrl.foobar()"/>
 		</script>
 
 		<script type="text/ng-template" id="example2.tmpl.html">
-			<h2>Example 2 View: {{x}}</h2>
-			<input type="button" value="Click me!" ng-click="foobar()"/>
+			<h2>Example 2 View: {{exampleCtrl.x}}</h2>
+			<input type="button" value="Click me!" ng-click="exampleCtrl.foobar()"/>
 		</script>
 	</body>
 </html>

@@ -11,12 +11,13 @@ var myApp = angular.module('myApp', ['prospect']);
 myApp.config(['prospectViewsProvider', function (prospectViewsProvider) {
 		// use the 'view' function to define a named view
 		prospectViewsProvider.view('myView', {
-			// a view's 'render' function needs to return an object with the properties controller and templateUrl
+			// a view's 'render' function needs to return an object with the properties controller, templateUrl, and controllerAs (optional)
 			// that will be used on the element rendering the view
 			render: function (path, params) {
 				// this function can be used to dynamically change the view based on the URL path and parameters
 				return {
 					controller: 'exampleCtrl',
+					controllerAs: 'exampleCtrl',
 					templateUrl: 'example1.tmpl.html'
 				};
 			}
@@ -38,10 +39,10 @@ $location.search('param', 12345);
 The controller will be instantiated whenever the 'render' function has changed either controller or templateUrl. 
 To receive notifications in your view controller when the URL changes, add a function named 'handleProspectStateChange' to your controllers scope:
 ```javascript
-myapp.controller('exampleCtrl', function($scope) {
+myapp.controller('exampleCtrl', function() {
 	// code that will be executed when the view is newly rendered
 
-	$scope.handleProspectStateChange = function() {
+	this.handleProspectStateChange = function(path, params) {
 		// code that will be executed when the view has already been rendered, but the path or params have changed
 		// do whatever you need to do based on the change in path or parameters
 		// e.g. reload data, show something different, or do nothing
@@ -50,5 +51,4 @@ myapp.controller('exampleCtrl', function($scope) {
 ```
 
 ## TODO
-- controllerAs support
 - state configuration with path parameters

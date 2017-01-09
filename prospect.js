@@ -69,20 +69,24 @@ prospect.directive('prospectView', ['$compile', '$rootScope', '$controller', '$s
 		/*
 		 * Render a new template and controller on the specified element.
 		 */
-		function renderView(element, templateUrl, controller) {
+		function renderView(element, templateUrl, controller, controllerAs) {
 			templateUrl = $sce.getTrustedResourceUrl(templateUrl);
 
 			return $templateRequest(templateUrl).then(function (template) {
 				var viewScope = $rootScope.$new();
 
-				$controller(controller, {
+				var controllerInstance = $controller(controller, {
 					$scope: viewScope
 				});
+
+				if (controllerAs !== undefined) {
+					viewScope[controllerAs] = controllerInstance;
+				}
 
 				element.html(template);
 				$compile(element.contents())(viewScope);
 
-				return viewScope;
+				return controllerInstance;
 			}, function (err) {
 				throw new Error("Error loading prospect template: " + templateUrl);
 			});
@@ -103,17 +107,19 @@ prospect.directive('prospectView', ['$compile', '$rootScope', '$controller', '$s
 					var renderResult = viewConfiguration.render(path, params);
 
 					if (renderResult.templateUrl === scope.currentTemplateUrl &&
-							renderResult.controller === scope.currentController) {
+							renderResult.controller === scope.currentController &&
+							renderResult.controllerAs === scope.currentControllerAs) {
 						// notify the current controller that there was a change
-						if (scope.currentViewScope.handleProspectStateChange) {
-							scope.currentViewScope.handleProspectStateChange();
+						if (scope.currentControllerInstance.handleProspectStateChange) {
+							scope.currentControllerInstance.handleProspectStateChange(path, params);
 						}
 					} else {
 						// re-render everything
-						renderView(element, renderResult.templateUrl, renderResult.controller).then(function (newScope) {
+						renderView(element, renderResult.templateUrl, renderResult.controller, renderResult.controllerAs).then(function (controllerInstance) {
 							scope.currentTemplateUrl = renderResult.templateUrl;
 							scope.currentController = renderResult.controller;
-							scope.currentViewScope = newScope;
+							scope.currentControllerAs = renderResult.controllerAs;
+							scope.currentControllerInstance = controllerInstance;
 						});
 					}
 				});
