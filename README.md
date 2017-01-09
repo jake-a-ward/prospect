@@ -1,5 +1,4 @@
-# prospect
-A simple Angular view library
+# prospect: A simple Angular view library
 
 prospect makes it easy to define views on your page that will listen for changes to the URL fragment and update accordingly.
 
@@ -28,7 +27,7 @@ To use the view in your HTML files, use the prospect-view directive and supply t
 <div prospect-view name="myView" />
 ~~~~
 
-In your controller, you can change the URL however you want, and the view will update automatically. One way would be to use location:
+In your controller, you can change the URL however you want, and the view will update automatically. One way would be to use $location:
 ~~~~
 $location.path('/subview');
 $location.search('param', 12345);
