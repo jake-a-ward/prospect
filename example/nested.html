@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width">
+		<title>Prospect Example: Nested Views</title>
+	</head>
+	<body ng-app="nestedExampleApp">
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular.min.js"></script>
+		<script src="../prospect.js"></script>
+		<script src="nested.js"></script>
+
+		<div prospect-view name="mainView" id="mainView"></div>
+
+		<script type="text/ng-template" id="main.tmpl.html">
+			<h1>Main: {{mainCtrl.x}}</h1>
+			<div prospect-view name="nestedView" id="nestedView"></div>
+		</script>
+
+		<script type="text/ng-template" id="nested.tmpl.html">
+			<h2>Nested: {{nestedCtrl.y}}</h2>
+			<div prospect-view name="doublyNestedView" id="doublyNestedView"></div>
+		</script>
+
+		<script type="text/ng-template" id="doublyNested.tmpl.html">
+			<h3>Doubly Nested: {{doublyNestedCtrl.z}}</h3>
+		</script>
+	</body>
+</html>

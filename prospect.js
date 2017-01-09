@@ -96,7 +96,7 @@ prospect.service('prospectState', ['$location', function ($location) {
 		this.go = function (pathName, pathArgs, params) {
 			// TODO path
 			$location.path('/');
-			
+
 			for (var param in params) {
 				if (params.hasOwnProperty(param)) {
 					$location.search(param, params[param]);
@@ -105,8 +105,32 @@ prospect.service('prospectState', ['$location', function ($location) {
 		};
 	}]);
 
-prospect.directive('prospectView', ['$compile', '$rootScope', '$controller', '$sce', '$templateRequest', '$$prospectEvents', 'prospectViews',
-	function ($compile, $rootScope, $controller, $sce, $templateRequest, $$prospectEvents, prospectViews) {
+prospect.directive('prospectView', ['$compile', '$rootScope', '$controller', '$sce', '$templateRequest', '$location', '$$prospectEvents', 'prospectViews',
+	function ($compile, $rootScope, $controller, $sce, $templateRequest, $location, $$prospectEvents, prospectViews) {
+
+		function handleView(scope, element, path, params) {
+			var viewConfiguration = prospectViews.getView(scope.name);
+
+			var renderResult = viewConfiguration.render(path, params);
+
+			if (renderResult.templateUrl === scope.currentTemplateUrl &&
+					renderResult.controller === scope.currentController &&
+					renderResult.controllerAs === scope.currentControllerAs) {
+				// notify the current controller that there was a change
+				if (scope.currentControllerInstance.handleProspectStateChange) {
+					scope.currentControllerInstance.handleProspectStateChange(path, params);
+				}
+			} else {
+				// re-render everything
+				renderView(element, renderResult.templateUrl, renderResult.controller, renderResult.controllerAs).then(function (controllerInstance) {
+					scope.currentTemplateUrl = renderResult.templateUrl;
+					scope.currentController = renderResult.controller;
+					scope.currentControllerAs = renderResult.controllerAs;
+					scope.currentControllerInstance = controllerInstance;
+				});
+			}
+		}
+
 		/*
 		 * Render a new template and controller on the specified element.
 		 */
@@ -141,28 +165,12 @@ prospect.directive('prospectView', ['$compile', '$rootScope', '$controller', '$s
 				name: '@'
 			},
 			link: function (scope, element, attrs) {
+				// initial draw of the view
+				handleView(scope, element, $location.path(), $location.search());
+
 				// listen for URL changes to make updates to the view
 				$$prospectEvents.addUrlListener(function (path, params) {
-					var viewConfiguration = prospectViews.getView(scope.name);
-
-					var renderResult = viewConfiguration.render(path, params);
-
-					if (renderResult.templateUrl === scope.currentTemplateUrl &&
-							renderResult.controller === scope.currentController &&
-							renderResult.controllerAs === scope.currentControllerAs) {
-						// notify the current controller that there was a change
-						if (scope.currentControllerInstance.handleProspectStateChange) {
-							scope.currentControllerInstance.handleProspectStateChange(path, params);
-						}
-					} else {
-						// re-render everything
-						renderView(element, renderResult.templateUrl, renderResult.controller, renderResult.controllerAs).then(function (controllerInstance) {
-							scope.currentTemplateUrl = renderResult.templateUrl;
-							scope.currentController = renderResult.controller;
-							scope.currentControllerAs = renderResult.controllerAs;
-							scope.currentControllerInstance = controllerInstance;
-						});
-					}
+					handleView(scope, element, path, params);
 				});
 			}
 		};
