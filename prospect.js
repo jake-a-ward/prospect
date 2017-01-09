@@ -1,16 +1,45 @@
 var prospect = angular.module('prospect', []);
 
+prospect.provider('prospectPaths', [function () {
+		var pathTemplates = {};
+
+		/*
+		 * Add a path template.
+		 */
+		this.path = function (name, pathTemplate) {
+			// /abc/:param1/:param2
+			var parts = pathTemplate.split(/\//g);
+
+			pathTemplates[name] = {
+				template: pathTemplate,
+				apply: function (args) {
+					// TODO
+					// use args to create the path
+				}
+			};
+		};
+
+		this.$get = [function () {
+				return {
+					getPathTemplate: function (name) {
+						var pathTemplate = pathTemplates[name];
+						if (pathTemplate === undefined) {
+							throw new Error('Unable to find prospect path template with name: ' + name);
+						}
+						return pathTemplate;
+					}
+				};
+			}];
+	}]);
+
 prospect.provider('prospectViews', [function () {
-		var views = [];
+		var views = {};
 
 		/*
 		 * Add a view configuration.
 		 */
 		this.view = function (name, configuration) {
-			views.push({
-				name: name,
-				configuration: configuration
-			});
+			views[name] = configuration;
 		};
 
 		this.$get = [function () {
@@ -19,12 +48,11 @@ prospect.provider('prospectViews', [function () {
 					 * Lookup a view configuration based on name.
 					 */
 					getView: function (name) {
-						for (var i = 0; i < views.length; i++) {
-							if (views[i].name === name) {
-								return views[i].configuration;
-							}
+						var view = views[name];
+						if (view === undefined) {
+							throw new Error('Unable to find prospect view with name: ' + name);
 						}
-						throw new Error('Unable to find prospect view with name: ' + name);
+						return view;
 					}
 				};
 			}];
@@ -62,6 +90,19 @@ prospect.run(['$location', '$rootScope', '$$prospectEvents',
 		$rootScope.$on('$locationChangeSuccess', function (event, newUrl, oldUrl, newState, oldState) {
 			$$prospectEvents.notifyUrlListeners($location.path(), $location.search());
 		});
+	}]);
+
+prospect.service('prospectState', ['$location', function ($location) {
+		this.go = function (pathName, pathArgs, params) {
+			// TODO path
+			$location.path('/');
+			
+			for (var param in params) {
+				if (params.hasOwnProperty(param)) {
+					$location.search(param, params[param]);
+				}
+			}
+		};
 	}]);
 
 prospect.directive('prospectView', ['$compile', '$rootScope', '$controller', '$sce', '$templateRequest', '$$prospectEvents', 'prospectViews',
