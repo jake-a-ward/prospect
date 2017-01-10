@@ -15,8 +15,6 @@ prospect.provider('prospectPaths', [function () {
 			};
 		};
 
-		// COMMON
-
 		/*
 		 * Split a path or path template into parts separated by a /.
 		 */
@@ -38,8 +36,6 @@ prospect.provider('prospectPaths', [function () {
 		function extractVariableName(part) {
 			return part.substring(1);
 		}
-
-		// APPLY
 
 		/*
 		 * Convert a path template name and arguments into a path.
@@ -151,8 +147,6 @@ prospect.provider('prospectPaths', [function () {
 
 		}
 
-		// ANGULAR
-
 		this.$get = [function () {
 				return {
 					/*
@@ -197,14 +191,30 @@ prospect.provider('prospectViews', [function () {
 
 /**
  * Internal service used to parse URL states.
+ * 
+ * Example:
+ * If a preconfigured path template named 'xyx' had the template '/xyz/:x'
+ * U URL of '/xyz/12345?a=8' would have a URL state of:
+ * {
+ *		path: '/xyz/12345',
+ *		pathName: 'xyz',
+ *		pathArgs: {x: 12345},
+ *		params: {a: 8}
+ * }
  */
 prospect.service('$$prospectUrlState', ['$location', 'prospectPaths',
 	function ($location, prospectPaths) {
 
+		/*
+		 * Get the current URL state.
+		 */
 		this.getCurrentUrlState = function () {
 			return this.parseUrlState($location.path(), $location.search());
 		}.bind(this);
 
+		/*
+		 * Parse the current URL state.
+		 */
 		this.parseUrlState = function (path, params) {
 			var match = prospectPaths.parse(path);
 

@@ -51,4 +51,5 @@ myapp.controller('exampleCtrl', function() {
 ```
 
 ## TODO
-- state configuration with path parameters
+- finish examples and README for path template examples
+- add resolve support to views

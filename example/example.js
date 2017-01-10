@@ -3,7 +3,7 @@ var myApp = angular.module('exampleApp', ['prospect']);
 
 myApp.config(['prospectPathsProvider', 'prospectViewsProvider', function (prospectPathsProvider, prospectViewsProvider) {
 
-		prospectPathsProvider.template('root', '/')
+		prospectPathsProvider.template('root', '/');
 		prospectPathsProvider.template('abc', '/abc/:q/123');
 		prospectPathsProvider.template('xyz', '/xyz/:q/:r');
 

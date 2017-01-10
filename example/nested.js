@@ -1,10 +1,12 @@
 
 var myApp = angular.module('nestedExampleApp', ['prospect']);
 
-myApp.config(['prospectViewsProvider', function (prospectViewsProvider) {
+myApp.config(['prospectPathsProvider', 'prospectViewsProvider', function (prospectPathsProvider, prospectViewsProvider) {
+
+		prospectPathsProvider.template('root', '/');
 
 		prospectViewsProvider.view('mainView', {
-			render: function (path, params) {
+			render: function (urlState) {
 				return {
 					controller: 'mainCtrl',
 					controllerAs: 'mainCtrl',
@@ -14,7 +16,7 @@ myApp.config(['prospectViewsProvider', function (prospectViewsProvider) {
 		});
 
 		prospectViewsProvider.view('nestedView', {
-			render: function (path, params) {
+			render: function (urlState) {
 				return {
 					controller: 'nestedCtrl',
 					controllerAs: 'nestedCtrl',
@@ -24,7 +26,7 @@ myApp.config(['prospectViewsProvider', function (prospectViewsProvider) {
 		});
 
 		prospectViewsProvider.view('doublyNestedView', {
-			render: function (path, params) {
+			render: function (urlState) {
 				return {
 					controller: 'doublyNestedCtrl',
 					controllerAs: 'doublyNestedCtrl',
@@ -39,7 +41,7 @@ myApp.controller('mainCtrl', [function () {
 
 		this.x = Math.random();
 
-		this.handleProspectStateChange = function (path, params) {
+		this.handleProspectStateChange = function (urlState) {
 			// instead of reloading the entire controller
 			// this function is called instead
 		};
@@ -49,7 +51,7 @@ myApp.controller('nestedCtrl', [function () {
 
 		this.y = Math.random();
 
-		this.handleProspectStateChange = function (path, params) {
+		this.handleProspectStateChange = function (urlState) {
 			// instead of reloading the entire controller
 			// this function is called instead
 		};
@@ -59,7 +61,7 @@ myApp.controller('doublyNestedCtrl', [function () {
 
 		this.z = Math.random();
 
-		this.handleProspectStateChange = function (path, params) {
+		this.handleProspectStateChange = function (urlState) {
 			// instead of reloading the entire controller
 			// this function is called instead
 		};
