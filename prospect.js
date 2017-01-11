@@ -194,7 +194,7 @@ prospect.provider('prospectViews', [function () {
  * 
  * Example:
  * If a preconfigured path template named 'xyx' had the template '/xyz/:x'
- * U URL of '/xyz/12345?a=8' would have a URL state of:
+ * A URL of '/xyz/12345?a=8' would have a URL state of:
  * {
  *		path: '/xyz/12345',
  *		pathName: 'xyz',
@@ -277,6 +277,13 @@ prospect.service('prospectState', ['$location', 'prospectPaths',
 					}
 				}
 			}
+		};
+
+		/*
+		 * Create a full URL link
+		 */
+		this.href = function (pathName, pathArgs, params) {
+			// TODO
 		};
 	}]);
 
