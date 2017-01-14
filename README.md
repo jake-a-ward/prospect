@@ -1,8 +1,8 @@
 # prospect: a simple Angular dynamic view library
 
-Prospect makes it easy to define views on your page that will listen for changes to the URL fragment and update the view accordingly. It also allows you to create path templates that make it easy to navigate between URL paths.
+Prospect makes it easy to define multiple views on your page that will listen for changes to the URL fragment and update the view accordingly. It also allows you to create path templates that make it easy to navigate between URL paths.
 
-## Dependency
+## Adding the dependency
 ```javascript
 // add a dependency on prospect
 var myApp = angular.module('myApp', ['prospect']);
@@ -92,10 +92,10 @@ Prospect will parse the URL every time that it changes and attempt to match it u
 For instance, in the example above the 'urlState' would be:
 ```json
 {
-	path: "/myPath/hello/detail",
-	pathName: "myPath",
-	pathArgs: {q: 'hello'},
-	params: {abc: '7'}
+	"path": "/myPath/hello/detail",
+	"pathName": "myPath",
+	"pathArgs": {"q": "hello"},
+	"params": {"abc": "7"}
 }
 ```
 
