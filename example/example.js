@@ -6,6 +6,7 @@ myApp.config(['prospectPathsProvider', 'prospectViewsProvider', function (prospe
 		prospectPathsProvider.template('root', '/');
 		prospectPathsProvider.template('abc', '/abc/:q/123');
 		prospectPathsProvider.template('xyz', '/xyz/:q/:r');
+		prospectPathsProvider.otherwise('/');
 
 		prospectViewsProvider.view('view1', {
 			render: function (urlState) {

@@ -2,6 +2,7 @@ var prospect = angular.module('prospect', []);
 
 prospect.provider('prospectPaths', [function () {
 		var pathTemplates = {};
+		var otherwisePath;
 
 		/*
 		 * Add a path template.
@@ -13,6 +14,10 @@ prospect.provider('prospectPaths', [function () {
 				template: pathTemplate,
 				parts: parts
 			};
+		};
+
+		this.otherwise = function (path) {
+			otherwisePath = path;
 		};
 
 		/*
@@ -157,7 +162,8 @@ prospect.provider('prospectPaths', [function () {
 					},
 					apply: function (name, args) {
 						return apply(name, args);
-					}
+					},
+					otherwise: otherwisePath
 				};
 			}];
 	}]);
@@ -230,7 +236,8 @@ prospect.service('$$prospectUrlState', ['$location', 'prospectPaths',
 /**
  * Internal service used to communicate events.
  */
-prospect.service('$$prospectEvents', ['$$prospectUrlState', function ($$prospectUrlState) {
+prospect.service('$$prospectEvents', ['$location', '$$prospectUrlState', 'prospectPaths',
+	function ($location, $$prospectUrlState, prospectPaths) {
 		var urlListeners = [];
 
 		/*
@@ -244,8 +251,14 @@ prospect.service('$$prospectEvents', ['$$prospectUrlState', function ($$prospect
 		 * Notify every listener that a URL change has occurred.
 		 */
 		this.notifyUrlListeners = function (path, params) {
-			var urlState = $$prospectUrlState.parseUrlState(path, params);
-
+			try {
+				var urlState = $$prospectUrlState.parseUrlState(path, params);
+			} catch (e) {
+				if (prospectPaths.otherwise) {
+					$location.path(prospectPaths.otherwise);
+				}
+				throw e;
+			}
 			urlListeners.forEach(function (listener) {
 				listener(urlState);
 			});
@@ -283,8 +296,16 @@ prospect.service('prospectState', ['$location', 'prospectPaths',
 		 * Create a full URL link
 		 */
 		this.href = function (pathName, pathArgs, params) {
-			// TODO
+			var url = $location.absUrl().split('#')[0];
+			var path = prospectPaths.apply(pathName, pathArgs);
+			return url + '#' + path + '?' + (params ? encodeParams(params) : '');
 		};
+
+		function encodeParams(params) {
+			return Object.keys(params).map(function (key) {
+				return [key, params[key]].map(encodeURIComponent).join('=');
+			}).join('&');
+		}
 	}]);
 
 prospect.directive('prospectView', ['$compile', '$rootScope', '$controller', '$sce', '$templateRequest', '$$prospectEvents', '$$prospectUrlState', 'prospectViews',
@@ -341,20 +362,56 @@ prospect.directive('prospectView', ['$compile', '$rootScope', '$controller', '$s
 
 		return {
 			replace: false,
-			restrict: 'EA',
+			restrict: 'A',
 			scope: {
 				// the name of the preconfigured view that will manage this element
 				name: '@'
 			},
 			link: function (scope, element, attrs) {
-				// initial draw of the view
-				handleView(scope, element, $$prospectUrlState.getCurrentUrlState());
-
 				// listen for URL changes to make updates to the view
 				$$prospectEvents.addUrlListener(function (urlState) {
 					handleView(scope, element, urlState);
 				});
+
+				// initial draw of the view
+				handleView(scope, element, $$prospectUrlState.getCurrentUrlState());
 			}
 		};
 	}]);
 
+/**
+ * Directive for anchor elements to apply a prospect path, args, and params.
+ * 
+ * Example:
+ * <a prospect-href='{pathName: "x", pathArgs: {y: someScopeVar}, params: {a: "xyz"}}'>Link</a>
+ */
+prospect.directive('prospectHref', ['prospectState',
+	function (prospectState) {
+		return {
+			replace: false,
+			restrict: 'A',
+			scope: true,
+			link: function (scope, element, attrs) {
+				if (element[0].tagName === 'A') {
+					scope.$watch(function () {
+						return attrs.prospectHref;
+					}, function (prospectHrefAttr) {
+						if (!prospectHrefAttr) {
+							throw new Error('Directive "prospect-href" requires a value.');
+						}
+
+						var prospectHref = scope.$eval(prospectHrefAttr);
+
+						var href = prospectState.href(
+								prospectHref.pathName,
+								prospectHref.pathArgs,
+								prospectHref.params);
+
+						attrs.$set('href', href);
+					});
+				} else {
+					throw new Error('Directive "prospect-href" can only be applied to <a> elements.')
+				}
+			}
+		};
+	}]);

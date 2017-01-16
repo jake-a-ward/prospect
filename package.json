@@ -1,7 +1,7 @@
 {
 	"name": "prospect",
 	"version": "1.0.0",
-	"description": "A simple Angular view library",
+	"description": "A simple Angular dynamic view library",
 	"main": "prospect.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"

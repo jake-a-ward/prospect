@@ -101,6 +101,4 @@ For instance, in the example above the 'urlState' would be:
 
 ## TODO
 - finish examples and README for path template examples
-- add resolve support to views
-- add support for prospectState.href
-- add href directive
+- add resolve support to views?
