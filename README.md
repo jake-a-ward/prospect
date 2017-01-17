@@ -23,6 +23,13 @@ myApp.config(['prospectPathsProvider', function (prospectPathsProvider) {
 ```
 Path templates can contain constant values and variables (prefixed with ':').
 
+Here is how to give your application a default path:
+```javascript
+myApp.config(['prospectPathsProvider', function (prospectPathsProvider) {
+		prospectPathsProvider.otherwise('/');
+	}]);
+```
+
 ## Views
 Prospect allows developers to create dynamic views that can be "switched out on the page". Prospect will re-render views as FEW times as possible, because re-rendering will cause your application to be slow and give the user a poor user experience. Prospect gives you tools to handle state changes gracefully in your views.
 
@@ -98,4 +105,18 @@ For instance, in the 'Transitioning State' example above the 'urlState' would be
 	"pathArgs": {"q": "hello"},
 	"params": {"abc": "7"}
 }
+```
+
+### Linking
+To manually create a full URL, use 'prospectState.href':
+```javascript
+myApp.controller('exampleCtrl', ['prospectState',
+	function (prospectState) {
+		var fullURL = prospectState.href('myPath', {q: 'hello'}, {abc: 7});
+	}]);
+```
+
+To modify an anchor element, the 'prospect-href' directive can be used:
+```html
+<a prospect-href='{pathName: "myPath", pathArgs: {q: "hello"}, params: {abc: 7}}'>My Link</a>
 ```
