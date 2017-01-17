@@ -312,7 +312,7 @@ prospect.directive('prospectView', ['$compile', '$rootScope', '$controller', '$s
 	function ($compile, $rootScope, $controller, $sce, $templateRequest, $$prospectEvents, $$prospectUrlState, prospectViews) {
 
 		function handleView(scope, element, urlState) {
-			var viewConfiguration = prospectViews.getView(scope.name);
+			var viewConfiguration = prospectViews.getView(scope.prospectView);
 
 			var renderResult = viewConfiguration.render(urlState);
 
@@ -365,7 +365,7 @@ prospect.directive('prospectView', ['$compile', '$rootScope', '$controller', '$s
 			restrict: 'A',
 			scope: {
 				// the name of the preconfigured view that will manage this element
-				name: '@'
+				prospectView: '@'
 			},
 			link: function (scope, element, attrs) {
 				// listen for URL changes to make updates to the view

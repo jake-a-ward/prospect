@@ -10,16 +10,16 @@
 		<script src="../prospect.js"></script>
 		<script src="nested.js"></script>
 
-		<div prospect-view name="mainView" id="mainView"></div>
+		<div prospect-view="mainView" id="mainView"></div>
 
 		<script type="text/ng-template" id="main.tmpl.html">
 			<h1>Main: {{mainCtrl.x}}</h1>
-			<div prospect-view name="nestedView" id="nestedView"></div>
+			<div prospect-view="nestedView" id="nestedView"></div>
 		</script>
 
 		<script type="text/ng-template" id="nested.tmpl.html">
 			<h2>Nested: {{nestedCtrl.y}}</h2>
-			<div prospect-view name="doublyNestedView" id="doublyNestedView"></div>
+			<div prospect-view="doublyNestedView" id="doublyNestedView"></div>
 		</script>
 
 		<script type="text/ng-template" id="doublyNested.tmpl.html">
